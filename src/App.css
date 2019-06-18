@@ -9,8 +9,6 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,4 +28,41 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.score {
+  text-align: right;
+  margin-right: 1rem;
+  font-size: 20px;
+}
+
+.btn-img {
+  padding: 0.4rem !important;
+}
+
+.house-img {
+  max-width: 22rem;
+  max-height: 22rem;
+}
+
+.btn-bottom {
+  margin: 15rem 2rem 2rem 2rem;
+}
+
+.btn-skip {
+  margin-right: 3rem;
+  width: 4rem;
+  height: 2rem;
+}
+
+.btn-submit {
+  align-self: center;
+  width: 4rem;
+  height: 2rem;
+}
+
+.btn-hint {
+  margin-left: 3rem;
+  width: 4rem;
+  height: 2rem;
 }
