@@ -1,5 +1,6 @@
 import React from "react";
 import house from "./img/sample.jpg";
+import Slider from "react-toolbox/lib/slider";
 import "./App.css";
 
 class Score extends React.Component {
@@ -55,6 +56,31 @@ class Buttons extends React.Component {
   }
 }
 
+//Slider Part
+class PriceRange extends React.Component {
+  state = {
+    slider1: 5
+  };
+  handleChange = (slider, value) => {
+    const newState = {};
+    newState[slider] = value;
+    this.setState(newState);
+  };
+  render() {
+    return (
+      <section>
+        <p>Normal slider</p>
+        <Slider
+          min={1}
+          max={100}
+          value={this.state.slider1}
+          onChange={this.handleChange.bind(this, "slider1")}
+        />
+      </section>
+    );
+  }
+}
+
 function App() {
   return (
     <div className="App">
@@ -63,10 +89,12 @@ function App() {
         <HousePicture />
       </header>
       <div>
+        <PriceRange />
+      </div>
+      <div>
         <Buttons />
       </div>
     </div>
   );
 }
-
 export default App;
