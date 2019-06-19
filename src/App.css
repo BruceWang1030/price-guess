@@ -1,5 +1,11 @@
 .App {
+  align-self: center;
   text-align: center;
+  margin: 5%;
+  border: gray;
+  border-style: groove;
+  width: 90%;
+  height: 90%;
 }
 
 .App-logo {
@@ -17,19 +23,13 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.block-price {
+  margin: 1rem;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.block-btns {
+  margin-top: 7rem;
+  margin-bottom: 1rem;
 }
-
 .score {
   text-align: right;
   margin-right: 1rem;
@@ -46,11 +46,12 @@
 }
 
 .btn-bottom {
-  margin: 9rem 2rem 2rem 2rem;
+  position: relative;
+  margin: 2rem, 2rem, 2rem, 2rem;
 }
 
 .btn-skip {
-  margin-right: 3rem;
+  margin-right: 5%;
   width: 4rem;
   height: 2rem;
 }
@@ -62,7 +63,7 @@
 }
 
 .btn-hint {
-  margin-left: 3rem;
+  margin-left: 5%;
   width: 4rem;
   height: 2rem;
 }
@@ -74,7 +75,6 @@
 
 .Card {
   height: 22rem;
-  margin: 1rem;
   display: inline-block;
   cursor: pointer;
 }
@@ -180,14 +180,14 @@
 .Card .Card-Back {
   width: 22rem;
   height: 22rem;
-  text-align: center;
+  text-align: left;
 
-  font-size: 0.9rem;
+  font-size: 1.3rem;
   position: absolute;
   z-index: -1;
-  top: 6rem;
+  top: 5rem;
   color: #012e34;
-  background-color: #69969c;
+  background-color: wheat;
   -webkit-transform: rotateY(-90deg);
   transform: rotateY(-90deg);
 }
@@ -291,4 +291,9 @@
 .Cards .Card:nth-child(4n + 4) .Card-Back {
   background-color: #ffe4aa;
   color: #012e34;
+}
+
+.info-list {
+  position: relative;
+  top: 7rem;
 }

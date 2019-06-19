@@ -52,7 +52,15 @@ class Card extends React.Component {
             <img src={house} alt="my house" className="house-img" />
           </h3>
         </div>
-        <div className={"Card-Back" + flippedCSS}>aaaaa</div>
+        <div className={"Card-Back" + flippedCSS}>
+          <ul className="info-list">
+            <li>3 Bedrooms and 2 Bathrooms</li>
+            <li>
+              2,300 ft<sup>2</sup>
+            </li>
+            <li>With a luxury swimming pool</li>
+          </ul>
+        </div>
       </div>
     );
   }
@@ -130,10 +138,10 @@ class App extends React.Component {
         <header className="App-header">
           <Card />
         </header>
-        <div>
+        <div className="block-price">
           <PriceRange value={300000} min={100000} max={500000} />
         </div>
-        <div>
+        <div className="block-btns">
           <Buttons />
         </div>
       </div>
