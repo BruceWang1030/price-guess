@@ -198,43 +198,21 @@ class App extends React.Component {
 
         <Zoom>
           <center style={{ margin: "25px" }}>
-            <form>
-              <div className="form-group" style={{ margin: "15px" }}>
-                <input
-                  className="form-control"
-                  type="text"
-                  id="nama"
-                  ref={innama => (this.inputnama = innama)}
-                  placeholder="Input nama di sini!"
-                />
-              </div>
+            <button
+              className="btn btn-primary"
+              style={{ width: "100px" }}
+              onClick={this.klikPost.bind(this)}
+            >
+              POST
+            </button>
 
-              <div className="form-group" style={{ margin: "15px" }}>
-                <input
-                  className="form-control"
-                  type="number"
-                  id="usia"
-                  ref={inusia => (this.inputusia = inusia)}
-                  placeholder="Input usia di sini!"
-                />
-              </div>
-
-              <button
-                className="btn btn-primary"
-                style={{ width: "100px" }}
-                onClick={this.klikPost.bind(this)}
-              >
-                POST
-              </button>
-
-              <button
-                className="btn btn-success"
-                style={{ margin: "15px", width: "100px" }}
-                onClick={this.klikGetOne.bind(this)}
-              >
-                GET
-              </button>
-            </form>
+            <button
+              className="btn btn-success"
+              style={{ margin: "15px", width: "100px" }}
+              onClick={this.klikGetOne.bind(this)}
+            >
+              GET
+            </button>
 
             <div>{dataMySQL}</div>
             <div>------------</div>
