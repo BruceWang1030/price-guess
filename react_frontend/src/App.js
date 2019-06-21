@@ -1,8 +1,14 @@
-import React, { Component } from "react";
+import React, {
+  Component,
+  forwardRef,
+  useRef,
+  useImperativeHandle
+} from "react";
 import axios from "axios";
 import Zoom from "react-reveal/Zoom";
 import Flip from "react-reveal/Flip";
 import house from "./img/sample.jpg";
+import qs from "qs";
 
 import "./App.css";
 
@@ -28,20 +34,14 @@ class Card extends React.Component {
       Price: 0
     };
     this.flip = this.flip.bind(this);
-    console.log("card state:");
-    console.log(this.state);
   }
   flip() {
-    console.log("flip clicked");
     this.setState({
       flipped: !this.state.flipped,
       clicked: true
     });
-    console.log("card state (flip)");
-    console.log(this.state);
   }
   componentWillReceiveProps(props) {
-    console.log("Card component did mount:");
     this.setState({
       BedroomCount: this.props.BedroomCount,
       BathroomCount: this.props.BathroomCount,
@@ -52,8 +52,6 @@ class Card extends React.Component {
       Amenities: this.props.Amenities,
       Price: this.props.Price
     });
-    console.log("state updated:");
-    console.log(this.state);
   }
 
   render() {
@@ -88,6 +86,9 @@ class Card extends React.Component {
 }
 
 class Buttons extends React.Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     function submit() {
       console.log("submitted");
@@ -103,7 +104,7 @@ class Buttons extends React.Component {
         {/* <button onClick={help} className="btn-help">
           Help
         </button> */}
-        <button onClick={hint} className="btn-hint">
+        <button onClick={this.props.triggerLevelUp} className="btn-hint">
           Hint
         </button>
         <button onClick={submit} className="btn-submit">
@@ -125,19 +126,30 @@ class PriceRange extends React.Component {
       max: 1200000
     };
     this.handleChange = this.handleChange.bind(this);
+
+    if (props.getCurrentPoint) {
+      props.getCurrentPoint(this.getMapPoint.bind(this));
+    }
   }
 
+  getMapPoint() {
+    return this.value;
+  }
+  check() {
+    console.log("check");
+    return (
+      this.state.value <= this.state.Price &&
+      this.state.value + this.state.slider_len >= this.state.Price
+    );
+  }
   handleChange(event) {
     this.setState({ value: event.target.value });
   }
 
   componentWillReceiveProps(props) {
-    console.log("PriceRange component did mount:");
     this.setState({
       Price: this.props.Price
     });
-    console.log("state updated:");
-    console.log(this.state);
   }
   render() {
     return (
@@ -160,40 +172,90 @@ class PriceRange extends React.Component {
   }
 }
 
+class Answer extends React.Component {
+  constructor(props) {
+    this.state = {
+      Price: 0,
+      isCorrect: false,
+      showAnswer: true
+    };
+    this.flip = this.flip.bind(this);
+  }
+  flip() {
+    this.setState({
+      showAnswer: !this.showAnswer
+    });
+  }
+  sentence(isCorrect) {
+    if (isCorrect) {
+      return "Congrats";
+    } else {
+      return "Almost there!";
+    }
+  }
+  render() {
+    return (
+      <div>
+        <Flip left when={this.show.showAnswer}>
+          <p>
+            {this.sentence(this.state.isCorrect)} The actual price is{" "}
+            {this.state.Price}
+          </p>
+        </Flip>
+        <button onClick={this.flip}>Change</button>
+      </div>
+    );
+  }
+}
+
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      house_data: [
-        {
-          house_id: 0,
-          BedroomCount: 0,
-          BathroomCount: 0,
-          Address: "",
-          City: "",
-          Province: "",
-          Amenities: "",
-          SizeInterior: "",
-          Price: 0
-        }
-      ],
-      user_data: [
-        {
-          user_id: 1,
-          level: 0
-        }
-      ]
+      house_data: {
+        house_id: 0,
+        BedroomCount: 0,
+        BathroomCount: 0,
+        Address: "",
+        City: "",
+        Province: "",
+        Amenities: "",
+        SizeInterior: "",
+        Price: 0
+      },
+      user_data: {
+        user_id: 1,
+        level: 0
+      }
     };
+    this.child_price = React.createRef();
+  }
+  mainBtnClick = () => {};
+
+  callChildPrice = () => {
+    var isCorrect = this.child_price.current.check();
+    if (isCorrect) {
+      alert("correct");
+    } else {
+      alert("Wrong");
+    }
+  };
+  levelUpCalculator() {
+    var currentLevel = this.state.user_data.level;
+    var nextLevel = parseInt(currentLevel) + 1;
+    return nextLevel;
   }
 
-  postNewUser(e) {
-    e.preventDefault();
+  postNewUser() {
+    console.log("----Post user----");
     var url = "http://localhost:3210/data/users";
     var today = new Date();
     axios
       .post(url, {
-        level: 1,
-        craeted_at: today.toISOString()
+        params: {
+          level: 1,
+          craeted_at: today.toISOString()
+        }
       })
       .then(function(response) {
         console.log(response);
@@ -203,29 +265,51 @@ class App extends React.Component {
       });
   }
 
-  fetchUser(e) {
-    console.log("fetch user: id" + this.state.user_data[0].user_id);
-    e.preventDefault();
+  levelUp() {
+    console.log("----Update user----");
+    console.log(this.state.user_data.user_id);
+    console.log(this.state.user_data.level);
+    var url = "http://localhost:3210/data/users";
+    axios
+      .put(url, {
+        params: {
+          user_id: 2,
+          level: 30
+        }
+      })
+      .then(response => {
+        console.log(response);
+        this.setState({
+          user_data: {
+            level: response.data.level
+          }
+        });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
+
+  fetchUser() {
+    console.log("----fetch user: " + this.state.user_data.user_id + " ----");
     var url = "http://localhost:3210/data/users";
     axios
       .get(url, {
         params: {
-          user_id: this.state.user_data[0].user_id
+          user_id: this.state.user_data.user_id
         }
       })
       .then(response => {
-        console.log("response.data");
-        console.log(response.data);
+        console.log(response.data[0]);
         this.setState({
-          user_data: response.data
+          user_data: response.data[0]
         });
       });
   }
 
-  fetchSingleHouse(e) {
+  fetchSingleHouse() {
+    console.log("----fetch house: " + this.state.house_data.house_id + " ----");
     var lucky = Math.floor(Math.random() * 3) + 1;
-    console.log("lucky: " + lucky);
-    e.preventDefault();
     var url = "http://localhost:3210/data/houses/id";
     axios
       .get(url, {
@@ -234,83 +318,52 @@ class App extends React.Component {
         }
       })
       .then(response => {
-        console.log("response.data");
-        console.log(response.data);
+        console.log(response.data[0]);
         this.setState({
-          house_data: response.data
+          house_data: response.data[0]
         });
       });
   }
 
   componentDidMount() {
-    console.log("App component mounted:");
-    var lucky = Math.floor(Math.random() * 3) + 1;
-    console.log("lucky: " + lucky);
-    var url = "http://localhost:3210/data/houses/id";
-    axios
-      .get(url, {
-        params: {
-          house_id: lucky
-        }
-      })
-      .then(response => {
-        console.log("response.data");
-        console.log(response.data);
-        this.setState({
-          house_data: response.data
-        });
-      });
+    this.fetchSingleHouse();
+    this.fetchUser();
   }
+
   render() {
-    const dataMySQL = this.state.house_data.map((item, index) => {
-      var arrayku = [
-        "house_id: ",
-        item.house_id,
-        ,
-        ", BedroomCount: ",
-        item.BedroomCount,
-        ", BathroomCount: ",
-        item.BathroomCount,
-        ", Address: ",
-        item.Address,
-        ", City: ",
-        item.City,
-        ", Province: ",
-        item.Province,
-        ", Amenities: ",
-        item.Amenities,
-        ", SizeInterior: ",
-        item.SizeInterior,
-        ", Price: ",
-        item.Price
-      ].join(" ");
-      return <p key={index}>{arrayku}</p>;
-    });
-    console.log("App");
-    console.log(this.state.house_data[0]);
     return (
       <div className="App">
-        <Score score={this.state.user_data[0].level} />
+        <Score score={this.state.user_data.level} />
         <header className="App-header">
           <Card
-            BedroomCount={this.state.house_data[0].BedroomCount}
-            BathroomCount={this.state.house_data[0].BathroomCount}
-            Address={this.state.house_data[0].Address}
-            City={this.state.house_data[0].City}
-            Province={this.state.house_data[0].Province}
-            Amenities={this.state.house_data[0].Amenities}
-            SizeInterior={this.state.house_data[0].SizeInterior}
+            BedroomCount={this.state.house_data.BedroomCount}
+            BathroomCount={this.state.house_data.BathroomCount}
+            Address={this.state.house_data.Address}
+            City={this.state.house_data.City}
+            Province={this.state.house_data.Province}
+            Amenities={this.state.house_data.Amenities}
+            SizeInterior={this.state.house_data.SizeInterior}
           />
         </header>
         <div className="block-price">
-          <PriceRange Price={this.state.house_data[0].Price} />
+          <PriceRange
+            Price={this.state.house_data.Price}
+            ref={this.child_price}
+          />
         </div>
         <div className="block-btns">
-          <Buttons />
+          <Buttons triggerLevelUp={this.levelUp.bind(this)} />
         </div>
 
         <Zoom>
           <center style={{ margin: "25px" }}>
+            <button
+              className="btn btn-primary"
+              style={{ width: "100px" }}
+              onClick={this.levelUp.bind(this)}
+            >
+              PUT
+            </button>
             <button
               className="btn btn-primary"
               style={{ width: "100px" }}
@@ -334,8 +387,14 @@ class App extends React.Component {
             >
               GET
             </button>
+            <button
+              className="btn btn-success"
+              style={{ margin: "15px", width: "100px" }}
+              onClick={this.callChildPrice}
+            >
+              Call
+            </button>
 
-            <div>{dataMySQL}</div>
             <div>------------</div>
           </center>
         </Zoom>
