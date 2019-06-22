@@ -55,12 +55,8 @@ app.get("/data/users", function(req, res) {
 //post a new user
 app.post("/data/users", function(req, res) {
   console.log("post new user to users");
-  console.log(req.query);
-  console.log(req.params);
-  var today = new Date();
-  var data = { level: 1, created_at: today.toISOString() };
-  console.log("data post users");
-  console.log(data.level);
+  console.log(req.body);
+  var data = { level: req.body.level, created_at: req.body.created_at };
   var sql =
     "INSERT INTO users (level,created_at) VALUES (" +
     data.level +
@@ -81,9 +77,8 @@ app.post("/data/users", function(req, res) {
 
 app.put("/data/users", function(req, res) {
   console.log("update user");
-  console.log(req.query);
-  console.log(req.params);
-  var data = { level: req.query.level, user_id: req.query.user_id };
+  console.log(req.body);
+  var data = { level: req.body.level, user_id: req.body.user_id };
   console.log(data);
   // var data = { level: 10, user_id: 1 };
   // console.log(data);
@@ -99,6 +94,7 @@ app.put("/data/users", function(req, res) {
     console.log(result);
     res.send({
       status: "Data sent",
+      user_id: data.user_id,
       level: data.level
     });
   });

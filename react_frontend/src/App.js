@@ -1,212 +1,13 @@
-import React, {
-  Component,
-  forwardRef,
-  useRef,
-  useImperativeHandle
-} from "react";
+import React from "react";
 import axios from "axios";
 import Zoom from "react-reveal/Zoom";
-import Flip from "react-reveal/Flip";
-import house from "./img/sample.jpg";
-import qs from "qs";
-
 import "./App.css";
 
-class Score extends React.Component {
-  render() {
-    return <h1 className="score">Level: {this.props.score}</h1>;
-  }
-}
-
-class Card extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      flipped: false,
-      clicked: false,
-      BedroomCount: 0,
-      BathroomCount: 0,
-      SizeInterior: "",
-      Address: "",
-      City: "",
-      Province: "",
-      Amenities: "",
-      Price: 0
-    };
-    this.flip = this.flip.bind(this);
-  }
-  flip() {
-    this.setState({
-      flipped: !this.state.flipped,
-      clicked: true
-    });
-  }
-  componentWillReceiveProps(props) {
-    this.setState({
-      BedroomCount: this.props.BedroomCount,
-      BathroomCount: this.props.BathroomCount,
-      SizeInterior: this.props.SizeInterior,
-      Address: this.props.Address,
-      City: this.props.City,
-      Province: this.props.Province,
-      Amenities: this.props.Amenities,
-      Price: this.props.Price
-    });
-  }
-
-  render() {
-    var flippedCSS = this.state.flipped
-      ? " Card-Back-Flip"
-      : " Card-Front-Flip";
-    if (!this.state.clicked) flippedCSS = "";
-    return (
-      <div className="Card" onClick={this.flip}>
-        <div className={"Card-Front" + flippedCSS}>
-          <h3>
-            <img src={house} alt="my house" className="house-img" />
-          </h3>
-        </div>
-        <div className={"Card-Back" + flippedCSS}>
-          <ul className="info-list">
-            <li>
-              {this.props.BedroomCount} Bedrooms and {this.props.BathroomCount}{" "}
-              Bathrooms
-            </li>
-            <li>Interior Size: {this.props.SizeInterior} sqft</li>
-            <li>
-              Address: {this.props.Address}, {this.props.City},{" "}
-              {this.props.Province}
-            </li>
-            <li>{this.props.Amenities}</li>
-          </ul>
-        </div>
-      </div>
-    );
-  }
-}
-
-class Buttons extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    function submit() {
-      console.log("submitted");
-    }
-    function help() {
-      console.log("Help Shown");
-    }
-    function hint() {
-      console.log("Hint shown");
-    }
-    return (
-      <div className="btn-bottom">
-        {/* <button onClick={help} className="btn-help">
-          Help
-        </button> */}
-        <button onClick={this.props.triggerLevelUp} className="btn-hint">
-          Hint
-        </button>
-        <button onClick={submit} className="btn-submit">
-          Submit
-        </button>
-      </div>
-    );
-  }
-}
-
+import Score from "./components/Score/Score";
+import Card from "./components/Card/Card";
+import PriceRange from "./components/PriceRange/PriceRange";
+import Answer from "./components/Answer/Answer";
 //Slider Part
-class PriceRange extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: 100000,
-      Price: 100000,
-      slider_len: 800000,
-      max: 1200000
-    };
-    this.handleChange = this.handleChange.bind(this);
-
-    if (props.getCurrentPoint) {
-      props.getCurrentPoint(this.getMapPoint.bind(this));
-    }
-  }
-
-  getMapPoint() {
-    return this.value;
-  }
-  check() {
-    console.log("check");
-    return (
-      this.state.value <= this.state.Price &&
-      this.state.value + this.state.slider_len >= this.state.Price
-    );
-  }
-  handleChange(event) {
-    this.setState({ value: event.target.value });
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({
-      Price: this.props.Price
-    });
-  }
-  render() {
-    return (
-      <div className="slidecontainer">
-        <input
-          type="range"
-          min={100000}
-          max={this.state.max}
-          value={this.state.value}
-          onChange={this.handleChange}
-          step="10000"
-          className="slider"
-        />
-        <div>
-          ${this.state.value} - $
-          {parseInt(this.state.value) + parseInt(this.state.slider_len)}
-        </div>
-      </div>
-    );
-  }
-}
-
-class Answer extends React.Component {
-  constructor(props) {
-    this.state = {
-      Price: 0,
-      isCorrect: false,
-      showAnswer: true
-    };
-    this.flip = this.flip.bind(this);
-  }
-  flip() {
-    this.setState({
-      showAnswer: !this.showAnswer
-    });
-  }
-  sentence(isCorrect) {
-    if (isCorrect) {
-      return "Congrats";
-    } else {
-      return "Almost there!";
-    }
-  }
-  render() {
-    return (
-      <div>
-        <Flip left when={this.show.showAnswer}>
-          <p>
-            {this.sentence(this.state.isCorrect)} The actual price is{" "}
-            {this.state.Price}
-          </p>
-        </Flip>
-        <button onClick={this.flip}>Change</button>
-      </div>
-    );
-  }
-}
 
 class App extends React.Component {
   constructor() {
@@ -226,25 +27,50 @@ class App extends React.Component {
       user_data: {
         user_id: 1,
         level: 0
-      }
+      },
+      value: 100000,
+      is_correct: false
     };
     this.child_price = React.createRef();
+    this.child_answer = React.createRef();
+    this.child_card = React.createRef();
+    this.setResult = this.setResult.bind(this);
   }
-  mainBtnClick = () => {};
-
-  callChildPrice = () => {
+  setResult(isCorrect) {
+    this.setState({
+      is_correct: isCorrect
+    });
+  }
+  mainBtnClick = () => {
     var isCorrect = this.child_price.current.check();
+    this.setResult(isCorrect);
+    this.child_answer.current.flip();
+    console.log("isCorrect: " + isCorrect);
     if (isCorrect) {
-      alert("correct");
+      console.log("correct");
+      this.levelUp();
     } else {
-      alert("Wrong");
+      console.log("incorrect");
     }
+    setTimeout(() => {
+      this.child_card.current.reset();
+      this.child_answer.current.flip();
+      this.fetchSingleHouse();
+
+      this.child_price.current.reset();
+    }, 3000);
   };
-  levelUpCalculator() {
-    var currentLevel = this.state.user_data.level;
-    var nextLevel = parseInt(currentLevel) + 1;
-    return nextLevel;
-  }
+  skipBtnClick = () => {
+    this.setResult(false);
+    this.child_answer.current.flip();
+    console.log("skipped");
+    setTimeout(() => {
+      this.child_card.current.reset();
+      this.child_price.current.reset();
+      this.child_answer.current.flip();
+      this.fetchSingleHouse();
+    }, 3000);
+  };
 
   postNewUser() {
     console.log("----Post user----");
@@ -252,10 +78,8 @@ class App extends React.Component {
     var today = new Date();
     axios
       .post(url, {
-        params: {
-          level: 1,
-          craeted_at: today.toISOString()
-        }
+        level: 5,
+        created_at: today.toISOString()
       })
       .then(function(response) {
         console.log(response);
@@ -264,24 +88,27 @@ class App extends React.Component {
         console.log(error);
       });
   }
-
+  levelUpCalculator() {
+    var currentLevel = this.state.user_data.level;
+    var nextLevel = parseInt(currentLevel) + 1;
+    return nextLevel;
+  }
   levelUp() {
-    console.log("----Update user----");
-    console.log(this.state.user_data.user_id);
-    console.log(this.state.user_data.level);
+    console.log("----Level Up user----");
     var url = "http://localhost:3210/data/users";
+    var this_user = this.state.user_data.user_id;
+    var nextLevel = this.levelUpCalculator();
     axios
       .put(url, {
-        params: {
-          user_id: 2,
-          level: 30
-        }
+        user_id: this_user,
+        level: nextLevel
       })
       .then(response => {
         console.log(response);
         this.setState({
           user_data: {
-            level: response.data.level
+            level: response.data.level,
+            user_id: response.data.user_id
           }
         });
       })
@@ -335,67 +162,39 @@ class App extends React.Component {
       <div className="App">
         <Score score={this.state.user_data.level} />
         <header className="App-header">
-          <Card
-            BedroomCount={this.state.house_data.BedroomCount}
-            BathroomCount={this.state.house_data.BathroomCount}
-            Address={this.state.house_data.Address}
-            City={this.state.house_data.City}
-            Province={this.state.house_data.Province}
-            Amenities={this.state.house_data.Amenities}
-            SizeInterior={this.state.house_data.SizeInterior}
-          />
+          <Card house_data={this.state.house_data} ref={this.child_card} />
         </header>
         <div className="block-price">
           <PriceRange
             Price={this.state.house_data.Price}
+            value={this.state.value}
             ref={this.child_price}
           />
         </div>
-        <div className="block-btns">
-          <Buttons triggerLevelUp={this.levelUp.bind(this)} />
+        <div>
+          <Answer
+            Price={this.state.house_data.Price}
+            isCorrect={this.state.is_correct}
+            ref={this.child_answer}
+          />
         </div>
 
         <Zoom>
           <center style={{ margin: "25px" }}>
             <button
-              className="btn btn-primary"
-              style={{ width: "100px" }}
-              onClick={this.levelUp.bind(this)}
-            >
-              PUT
-            </button>
-            <button
-              className="btn btn-primary"
-              style={{ width: "100px" }}
-              onClick={this.postNewUser.bind(this)}
-            >
-              POST
-            </button>
-
-            <button
-              className="btn btn-primary"
-              style={{ width: "100px" }}
-              onClick={this.fetchUser.bind(this)}
-            >
-              getUser
-            </button>
-
-            <button
-              className="btn btn-success"
+              className="btn red"
               style={{ margin: "15px", width: "100px" }}
-              onClick={this.fetchSingleHouse.bind(this)}
+              onClick={this.skipBtnClick}
             >
-              GET
+              Skip
             </button>
             <button
-              className="btn btn-success"
+              className="btn blue"
               style={{ margin: "15px", width: "100px" }}
-              onClick={this.callChildPrice}
+              onClick={this.mainBtnClick}
             >
-              Call
+              Submit
             </button>
-
-            <div>------------</div>
           </center>
         </Zoom>
       </div>
