@@ -1,9 +1,21 @@
-input[type="range"].myslider {
-  height: 20px;
-  -webkit-appearance: none;
-  margin: 10px 0;
-  width: 100%;
+@media only screen and (min-width: 350px) {
+  input[type="range"].myslider {
+    height: 20px;
+    -webkit-appearance: none;
+    margin: 20px 0;
+    width: 100%;
+  }
 }
+
+@media only screen and (max-width: 350px) {
+  input[type="range"].myslider {
+    height: 20px;
+    -webkit-appearance: none;
+    margin: 10px 0 0 0;
+    width: 100%;
+  }
+}
+
 input[type="range"].myslider:focus {
   outline: none;
 }
@@ -19,7 +31,7 @@ input[type="range"].myslider::-webkit-slider-runnable-track {
 input[type="range"].myslider::-webkit-slider-thumb {
   border: 2px solid #55acee;
   height: 20px;
-  width: 40px;
+  width: 40%;
   border-radius: 12px;
   background: #529de1;
   cursor: pointer;
@@ -69,7 +81,7 @@ input[type="range"].myslider::-ms-thumb {
   margin-top: 1px;
   border: 2px solid #55acee;
   height: 20px;
-  width: 40px;
+  width: 40%;
   border-radius: 12px;
   background: #529de1;
   cursor: pointer;
@@ -80,3 +92,7 @@ input[type="range"].myslider:focus::-ms-fill-lower {
 input[type="range"].myslider:focus::-ms-fill-upper {
   background: white;
 }
+
+/* .slidecontainer {
+  margin-top: 2rem;
+} */

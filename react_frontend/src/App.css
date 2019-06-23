@@ -4,6 +4,7 @@
   margin: 5%;
   border: gray;
   border-style: groove;
+  border-radius: 5px;
   width: 90%;
   height: 90%;
 }
@@ -40,12 +41,33 @@
   background: white;
 }
 
-.blue {
-  color: #55acee;
-  border: 2px #55acee solid;
+@media only screen and (min-width: 350px) {
+  .blue {
+    color: #55acee;
+    border: 2px #55acee solid;
+  }
+
+  .red {
+    color: #e74c3c;
+    border: 2px #e74c3c solid;
+  }
+}
+@media only screen and (max-width: 350px) {
+  .blue {
+    color: #55acee;
+    border: 2px #55acee solid;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+  }
+
+  .red {
+    color: #e74c3c;
+    border: 2px #e74c3c solid;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+  }
 }
 
-.red {
-  color: #e74c3c;
-  border: 2px #e74c3c solid;
+.btns-bottom {
+  margin: 10px;
 }

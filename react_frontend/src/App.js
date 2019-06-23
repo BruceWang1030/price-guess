@@ -53,11 +53,10 @@ class App extends React.Component {
       console.log("incorrect");
     }
     setTimeout(() => {
-      this.child_card.current.reset();
       this.child_answer.current.flip();
-      this.fetchSingleHouse();
-
+      this.child_card.current.reset();
       this.child_price.current.reset();
+      this.fetchSingleHouse();
     }, 3000);
   };
   skipBtnClick = () => {
@@ -65,16 +64,18 @@ class App extends React.Component {
     this.child_answer.current.flip();
     console.log("skipped");
     setTimeout(() => {
+      this.child_answer.current.flip();
+    }, 2500);
+    setTimeout(() => {
       this.child_card.current.reset();
       this.child_price.current.reset();
-      this.child_answer.current.flip();
       this.fetchSingleHouse();
     }, 3000);
   };
 
   postNewUser() {
     console.log("----Post user----");
-    var url = "http://localhost:3210/data/users";
+    var url = "http://localhost:8080/data/users";
     var today = new Date();
     axios
       .post(url, {
@@ -95,7 +96,7 @@ class App extends React.Component {
   }
   levelUp() {
     console.log("----Level Up user----");
-    var url = "http://localhost:3210/data/users";
+    var url = "http://localhost:8080/data/users";
     var this_user = this.state.user_data.user_id;
     var nextLevel = this.levelUpCalculator();
     axios
@@ -119,7 +120,7 @@ class App extends React.Component {
 
   fetchUser() {
     console.log("----fetch user: " + this.state.user_data.user_id + " ----");
-    var url = "http://localhost:3210/data/users";
+    var url = "http://localhost:8080/data/users";
     axios
       .get(url, {
         params: {
@@ -137,7 +138,7 @@ class App extends React.Component {
   fetchSingleHouse() {
     console.log("----fetch house: " + this.state.house_data.house_id + " ----");
     var lucky = Math.floor(Math.random() * 3) + 1;
-    var url = "http://localhost:3210/data/houses/id";
+    var url = "http://localhost:8080/data/houses/id";
     axios
       .get(url, {
         params: {
@@ -180,7 +181,7 @@ class App extends React.Component {
         </div>
 
         <Zoom>
-          <center style={{ margin: "25px" }}>
+          <center className="btns-bottom">
             <button
               className="btn red"
               style={{ margin: "15px", width: "100px" }}
