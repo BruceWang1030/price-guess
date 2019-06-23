@@ -28,6 +28,10 @@ db.connect(function(err) {
   console.log("Connected!");
 });
 
+app.get("/", function(req, res) {
+  res.send("Hello");
+});
+
 //fetch house single
 app.get("/data/houses/id", function(req, res) {
   console.log("req.query: " + req.query.house_id);
@@ -100,6 +104,6 @@ app.put("/data/users", function(req, res) {
   });
 });
 
-app.listen(3210, () => {
-  console.log("Server listening to port 3210");
+app.listen(8080, () => {
+  console.log("Server listening to port 8080");
 });
