@@ -1,0 +1,12 @@
+.answer-block-true {
+  align-self: center;
+  margin: 2.5%;
+  border: #5fcf80 2px solid;
+  border-radius: 4px;
+}
+
+.answer-block-false {
+  align-self: center;
+  margin: 2.5%;
+  border: #e74c3c 2px solid;
+}

@@ -1,138 +1,86 @@
-import React, { Component } from "react";
+import React from "react";
 import axios from "axios";
 import Zoom from "react-reveal/Zoom";
-import Flip from "react-reveal/Flip";
-import house from "./img/sample.jpg";
-
 import "./App.css";
 
-class Score extends React.Component {
-  render() {
-    return <h1 className="score">Score: {this.props.score}</h1>;
-  }
-}
-
-class Card extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      flipped: false,
-      clicked: false
-    };
-    this.flip = this.flip.bind(this);
-  }
-  flip() {
-    console.log("flip clicked");
-    this.setState({
-      flipped: !this.state.flipped,
-      clicked: true
-    });
-  }
-  render() {
-    var flippedCSS = this.state.flipped
-      ? " Card-Back-Flip"
-      : " Card-Front-Flip";
-    if (!this.state.clicked) flippedCSS = "";
-    return (
-      <div className="Card" onClick={this.flip}>
-        <div className={"Card-Front" + flippedCSS}>
-          <h3>
-            <img src={house} alt="my house" className="house-img" />
-          </h3>
-        </div>
-        <div className={"Card-Back" + flippedCSS}>
-          <ul className="info-list">
-            <li>3 Bedrooms and 2 Bathrooms</li>
-            <li>
-              2,300 ft<sup>2</sup>
-            </li>
-            <li>With a luxury swimming pool</li>
-          </ul>
-        </div>
-      </div>
-    );
-  }
-}
-
-class Buttons extends React.Component {
-  render() {
-    function submit() {
-      console.log("submitted");
-    }
-    function skip() {
-      console.log("skipped");
-    }
-    function hint() {
-      console.log("Hint shown");
-    }
-    return (
-      <div className="btn-bottom">
-        <button onClick={skip} className="btn-skip">
-          Skip
-        </button>
-        <button onClick={submit} className="btn-submit">
-          Submit
-        </button>
-        <button onClick={hint} className="btn-hint">
-          Hint
-        </button>
-      </div>
-    );
-  }
-}
-
+import Score from "./components/Score/Score";
+import Card from "./components/Card/Card";
+import PriceRange from "./components/PriceRange/PriceRange";
+import Answer from "./components/Answer/Answer";
 //Slider Part
-class PriceRange extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: this.props.value,
-      min: this.props.min,
-      max: this.props.max
-    };
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(event) {
-    this.setState({ value: event.target.value });
-  }
-
-  render() {
-    return (
-      <div>
-        <label>
-          <input
-            id="typeinp"
-            type="range"
-            min={this.state.min}
-            max={this.state.max}
-            value={this.state.value}
-            onChange={this.handleChange}
-            step="10000"
-            className="price-range"
-          />
-        </label>
-        <div>${this.state.value}</div>
-      </div>
-    );
-  }
-}
 
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      house_data: []
+      house_data: {
+        house_id: 0,
+        BedroomCount: 0,
+        BathroomCount: 0,
+        Address: "",
+        City: "",
+        Province: "",
+        Amenities: "",
+        SizeInterior: "",
+        Price: 0
+      },
+      user_data: {
+        user_id: 1,
+        level: 0
+      },
+      value: 100000,
+      is_correct: false
     };
+    this.child_price = React.createRef();
+    this.child_answer = React.createRef();
+    this.child_card = React.createRef();
+    this.setResult = this.setResult.bind(this);
   }
+  setResult(isCorrect) {
+    this.setState({
+      is_correct: isCorrect
+    });
+  }
+  mainBtnClick = () => {
+    var isCorrect = this.child_price.current.check();
+    this.setResult(isCorrect);
+    this.child_answer.current.flip();
+    console.log("isCorrect: " + isCorrect);
+    if (isCorrect) {
+      console.log("correct");
+      this.levelUp();
+    } else {
+      console.log("incorrect");
+    }
+    setTimeout(() => {
+      this.child_answer.current.flip();
+      this.child_card.current.reset();
+      this.child_price.current.reset();
+      this.fetchSingleHouse();
+    }, 3000);
+  };
+  skipBtnClick = () => {
+    this.setResult(false);
+    this.child_answer.current.flip();
+    console.log("skipped");
+    setTimeout(() => {
+      this.child_answer.current.flip();
+    }, 2500);
+    setTimeout(() => {
+      this.child_card.current.reset();
+      this.child_price.current.reset();
+      this.fetchSingleHouse();
+    }, 3000);
+  };
 
-  klikPost(e) {
-    e.preventDefault();
-    var url = "http://localhost:3210/data/house";
+  postNewUser() {
+    console.log("----Post user----");
+    var url = "http://localhost:8080/data/users";
+    var today = new Date();
     axios
       .post(url, {
-        nama: this.inputnama.value,
-        usia: this.inputusia.value
+        level: 5,
+        created_at: today.toISOString()
       })
       .then(function(response) {
         console.log(response);
@@ -140,82 +88,114 @@ class App extends React.Component {
       .catch(function(error) {
         console.log(error);
       });
-    this.inputnama.value = "";
-    this.inputusia.value = "";
   }
-
-  klikGet(e) {
-    e.preventDefault();
-    var url = "http://localhost:3210/data/house";
-    axios.get(url).then(response => {
-      console.log(response.data);
-      this.setState({
-        house_data: response.data
+  levelUpCalculator() {
+    var currentLevel = this.state.user_data.level;
+    var nextLevel = parseInt(currentLevel) + 1;
+    return nextLevel;
+  }
+  levelUp() {
+    console.log("----Level Up user----");
+    var url = "http://localhost:8080/data/users";
+    var this_user = this.state.user_data.user_id;
+    var nextLevel = this.levelUpCalculator();
+    axios
+      .put(url, {
+        user_id: this_user,
+        level: nextLevel
+      })
+      .then(response => {
+        console.log(response);
+        this.setState({
+          user_data: {
+            level: response.data.level,
+            user_id: response.data.user_id
+          }
+        });
+      })
+      .catch(function(error) {
+        console.log(error);
       });
-    });
   }
 
-  klikGetOne(e) {
-    var lucky = Math.floor(Math.random() * 4) + 1;
-    console.log("lucky: " + lucky);
-    e.preventDefault();
-    var url = "http://localhost:3210/data/house/id";
+  fetchUser() {
+    console.log("----fetch user: " + this.state.user_data.user_id + " ----");
+    var url = "http://localhost:8080/data/users";
     axios
       .get(url, {
         params: {
-          no: lucky
+          user_id: this.state.user_data.user_id
         }
       })
       .then(response => {
-        console.log("response.data");
-        console.log(response.data);
+        console.log(response.data[0]);
         this.setState({
-          house_data: response.data
+          user_data: response.data[0]
         });
       });
   }
 
-  render() {
-    const dataMySQL = this.state.house_data.map((item, index) => {
-      var arrayku = ["Nama: ", item.nama, ", Usia: ", item.usia, " th."].join(
-        " "
-      );
-      return <p key={index}>{arrayku}</p>;
-    });
+  fetchSingleHouse() {
+    console.log("----fetch house: " + this.state.house_data.house_id + " ----");
+    var lucky = Math.floor(Math.random() * 3) + 1;
+    var url = "http://localhost:8080/data/houses/id";
+    axios
+      .get(url, {
+        params: {
+          house_id: lucky
+        }
+      })
+      .then(response => {
+        console.log(response.data[0]);
+        this.setState({
+          house_data: response.data[0]
+        });
+      });
+  }
 
+  componentDidMount() {
+    this.fetchSingleHouse();
+    this.fetchUser();
+  }
+
+  render() {
     return (
       <div className="App">
-        <Score score={33} />
+        <Score score={this.state.user_data.level} />
         <header className="App-header">
-          <Card />
+          <Card house_data={this.state.house_data} ref={this.child_card} />
         </header>
         <div className="block-price">
-          <PriceRange value={300000} min={100000} max={500000} />
+          <PriceRange
+            Price={this.state.house_data.Price}
+            value={this.state.value}
+            ref={this.child_price}
+          />
         </div>
-        <div className="block-btns">
-          <Buttons />
+        <div>
+          <Answer
+            Price={this.state.house_data.Price}
+            isCorrect={this.state.is_correct}
+            ref={this.child_answer}
+          />
         </div>
 
         <Zoom>
-          <center style={{ margin: "25px" }}>
+          <center className="btns-bottom">
             <button
-              className="btn btn-primary"
-              style={{ width: "100px" }}
-              onClick={this.klikPost.bind(this)}
-            >
-              POST
-            </button>
-
-            <button
-              className="btn btn-success"
+              className="btn red"
               style={{ margin: "15px", width: "100px" }}
-              onClick={this.klikGetOne.bind(this)}
+              onClick={this.skipBtnClick}
             >
-              GET
+              Skip
             </button>
-
-            <div>{dataMySQL}</div>
-            <div>------------</div>
+            <button
+              className="btn blue"
+              style={{ margin: "15px", width: "100px" }}
+              onClick={this.mainBtnClick}
+            >
+              Submit
+            </button>
           </center>
         </Zoom>
       </div>

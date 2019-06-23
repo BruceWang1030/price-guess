@@ -8,16 +8,28 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "YES",
-  database: "dojo"
+  host: "35.203.127.86",
+  user: "brucewang",
+  port: "3306",
+  password: "Roger173",
+  database: "huckleberry_game_data"
 });
 
-db.connect();
-//get all houses
-app.get("/data/house", function(req, res) {
-  var sql = "SELECT * FROM ninja";
+db.connect(function(err) {
+  if (err) throw err;
+  console.log("Connected!");
+});
+
+app.get("/", function(req, res) {
+  res.send("Hello");
+});
+
+//fetch house single
+app.get("/data/houses/id", function(req, res) {
+  console.log("req.query: " + req.query.house_id);
+  console.log(req.query);
+  console.log(req.params);
+  var sql = "SELECT * FROM houses where house_id=" + req.query.house_id;
   db.query(sql, (err, result) => {
     if (err) throw err;
     console.log(result);
@@ -25,10 +37,10 @@ app.get("/data/house", function(req, res) {
   });
 });
 
-//get single house
-app.get("/data/house/id", function(req, res) {
-  console.log("req.query: " + req.query.no);
-  var sql = "SELECT * FROM ninja where no=" + req.query.no;
+//fetch user
+app.get("/data/users", function(req, res) {
+  console.log("req.query: " + req.query.user_id);
+  var sql = "SELECT * FROM users where user_id=" + req.query.user_id;
   db.query(sql, (err, result) => {
     if (err) throw err;
     console.log(result);
@@ -36,48 +48,54 @@ app.get("/data/house/id", function(req, res) {
   });
 });
 
-//post a new house
-app.post("/data/house", function(req, res) {
+//post a new user
+app.post("/data/users", function(req, res) {
+  console.log("post new user to users");
   console.log(req.body);
-  var data = { nama: req.body.nama, usia: req.body.usia };
-  var sql = "INSERT INTO ninja SET ?";
-  db.query(sql, data, (err, result) => {
+  var data = { level: req.body.level, created_at: req.body.created_at };
+  var sql =
+    "INSERT INTO users (level,created_at) VALUES (" +
+    data.level +
+    ",'" +
+    data.created_at +
+    "')";
+  console.log(sql);
+  db.query(sql, (err, result) => {
     if (err) throw err;
     console.log(result);
     res.send({
-      status: "Data sukses diinput!",
-      no: null,
-      nama: req.body.nama,
-      usia: req.body.usia
+      status: "Data sent",
+      level: data.level,
+      created: data.created_at
     });
   });
 });
 
-app.get("/data/knight", function(req, res) {
-  var sql = "SELECT * FROM knight";
+app.put("/data/users", function(req, res) {
+  console.log("update user");
+  console.log(req.body);
+  var data = { level: req.body.level, user_id: req.body.user_id };
+  console.log(data);
+  // var data = { level: 10, user_id: 1 };
+  // console.log(data);
+  var sql =
+    "UPDATE users SET level = " +
+    data.level +
+    " WHERE (user_id = " +
+    data.user_id +
+    ")";
+  console.log(sql);
   db.query(sql, (err, result) => {
     if (err) throw err;
     console.log(result);
-    res.send(result);
-  });
-});
-
-app.post("/data/knight", function(req, res) {
-  console.log(req.body);
-  var data = { nama: req.body.nama, usia: req.body.usia };
-  var sql = "INSERT INTO knight SET ?";
-  db.query(sql, data, (err, result) => {
-    if (err) throw err;
-    console.log(result);
     res.send({
-      status: "Data sukses diinput!",
-      no: null,
-      nama: req.body.nama,
-      usia: req.body.usia
+      status: "Data sent",
+      user_id: data.user_id,
+      level: data.level
     });
   });
 });
 
-app.listen(3210, () => {
-  console.log("Server aktif di port 3210");
+app.listen(8080, () => {
+  console.log("Server listening to port 8080");
 });
