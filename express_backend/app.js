@@ -15,6 +15,14 @@ const db = mysql.createConnection({
   database: "huckleberry_game_data"
 });
 
+// const db = mysql.createConnection({
+//   host: "mydb.co3yccf4vocd.us-east-2.rds.amazonaws.com",
+//   user: "root",
+//   port: "3306",
+//   password: "05241030",
+//   database: "mydb"
+// });
+
 db.connect(function(err) {
   if (err) throw err;
   console.log("Connected!");
