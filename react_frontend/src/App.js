@@ -4,6 +4,7 @@ import Zoom from "react-reveal/Zoom";
 import "./App.css";
 
 import Score from "./components/Score/Score";
+import Menu from "./components/Menu/Menu";
 import Card from "./components/Card/Card";
 import PriceRange from "./components/PriceRange/PriceRange";
 import Answer from "./components/Answer/Answer";
@@ -162,6 +163,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <Score score={this.state.user_data.level} />
+        <Menu />
         <header className="App-header">
           <Card house_data={this.state.house_data} ref={this.child_card} />
         </header>
