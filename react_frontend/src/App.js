@@ -137,7 +137,7 @@ class App extends React.Component {
 
   fetchSingleHouse() {
     console.log("----fetch house: " + this.state.house_data.house_id + " ----");
-    var lucky = Math.floor(Math.random() * 3) + 1;
+    var lucky = Math.floor(Math.random() * 100) + 1;
     var url = "http://localhost:8080/data/houses/id";
     axios
       .get(url, {
@@ -169,6 +169,7 @@ class App extends React.Component {
           <PriceRange
             Price={this.state.house_data.Price}
             value={this.state.value}
+            score={this.state.user_data.level}
             ref={this.child_price}
           />
         </div>

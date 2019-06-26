@@ -1,3 +1,7 @@
+:root{
+  --thumb-percent: 40%;
+}
+
 @media only screen and (min-width: 350px) {
   input[type="range"].myslider {
     height: 20px;
@@ -31,7 +35,7 @@ input[type="range"].myslider::-webkit-slider-runnable-track {
 input[type="range"].myslider::-webkit-slider-thumb {
   border: 2px solid #55acee;
   height: 20px;
-  width: 40%;
+  width: var(--thumb-percent);
   border-radius: 12px;
   background: #529de1;
   cursor: pointer;
@@ -81,7 +85,7 @@ input[type="range"].myslider::-ms-thumb {
   margin-top: 1px;
   border: 2px solid #55acee;
   height: 20px;
-  width: 40%;
+  width: var(--thumb-percent);
   border-radius: 12px;
   background: #529de1;
   cursor: pointer;
