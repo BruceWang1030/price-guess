@@ -10,7 +10,7 @@ class PriceRange extends React.Component {
       slider_len: 800000,
       max: 1200000,
       score: 1,
-      percent: 40,
+      percent: 40
     };
     this.handleChange = this.handleChange.bind(this);
     this.reset = this.reset.bind(this);
@@ -20,17 +20,16 @@ class PriceRange extends React.Component {
       value: 100000
     });
   }
-  slider_percent(score){
-    if(score>50){
-      if(score>300) return 5;
-      else if (score>200)return 8;
-      else if(score>100)return 10;
+  slider_percent(score) {
+    if (score > 50) {
+      if (score > 300) return 5;
+      else if (score > 200) return 8;
+      else if (score > 100) return 10;
       else return 12;
-    }
-    else{
-      if(score>20) return 15;
-      else if(score>5)return 20;
-      else if(score>1)return 30;
+    } else {
+      if (score > 20) return 15;
+      else if (score > 5) return 20;
+      else if (score > 1) return 30;
       else return 40;
     }
   }
@@ -49,19 +48,17 @@ class PriceRange extends React.Component {
       Price: this.props.Price,
       score: this.props.score,
       percent: this.slider_percent(this.props.score),
-      slider_len: 2000000*this.slider_percent(this.props.score)/100,
-      max: 2000000-2000000*this.slider_percent(this.props.score)/100,
+      slider_len: (2000000 * this.slider_percent(this.props.score)) / 100,
+      max: 2000000 - (2000000 * this.slider_percent(this.props.score)) / 100
     });
   }
   render() {
     return (
       <div className="slidecontainer">
         <style>
-          {
-            `:root{
+          {`:root{
               --thumb-percent: ${this.state.percent}%
-            }`
-          }
+            }`}
         </style>
         <input
           type="range"

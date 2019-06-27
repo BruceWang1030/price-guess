@@ -57,24 +57,30 @@ app.get("/data/users", function(req, res) {
 });
 
 //post a new user
-app.post("/data/users", function(req, res) {
+app.post("auth/register", function(req, res) {
   console.log("post new user to users");
   console.log(req.body);
-  var data = { level: req.body.level, created_at: req.body.created_at };
+  var this_day = new Date();
+  var created_at = this_day.toISOString();
+  var data = { 
+    level: req.body.level, 
+    created_at: created_at,
+    username: req.body.username,
+    email: req.body.email,
+    password: req.body.password
+  };
   var sql =
-    "INSERT INTO users (level,created_at) VALUES (" +
-    data.level +
-    ",'" +
-    data.created_at +
-    "')";
+    "INSERT INTO users (level, created_at, username, email, password) VALUES (?,?,?,?,?)";
   console.log(sql);
-  db.query(sql, (err, result) => {
+  db.query(sql, [data.level, data.created_at, data.username, data.email, data.password], (err, result) => {
     if (err) throw err;
     console.log(result);
     res.send({
       status: "Data sent",
       level: data.level,
-      created: data.created_at
+      created: data.created_at,
+      username: data.username,
+      email: data.email
     });
   });
 });

@@ -7,6 +7,7 @@ import Score from "./components/Score/Score";
 import Card from "./components/Card/Card";
 import PriceRange from "./components/PriceRange/PriceRange";
 import Answer from "./components/Answer/Answer";
+import Login from "./Login";
 //Slider Part
 
 class App extends React.Component {
@@ -161,6 +162,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
+        <Login />
         <Score score={this.state.user_data.level} />
         <header className="App-header">
           <Card house_data={this.state.house_data} ref={this.child_card} />
