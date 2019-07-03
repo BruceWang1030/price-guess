@@ -45,7 +45,9 @@ class App extends React.Component {
   mainBtnClick = () => {
     var isCorrect = this.child_price.current.check();
     this.setResult(isCorrect);
-    this.child_answer.current.flip();
+    setTimeout(() => {
+      this.child_answer.current.flip();
+    }, 100);
     console.log("isCorrect: " + isCorrect);
     if (isCorrect) {
       console.log("correct");
@@ -62,7 +64,9 @@ class App extends React.Component {
   };
   skipBtnClick = () => {
     this.setResult(false);
-    this.child_answer.current.flip();
+    setTimeout(() => {
+      this.child_answer.current.flip();
+    }, 100);
     console.log("skipped");
     setTimeout(() => {
       this.child_answer.current.flip();
@@ -129,7 +133,7 @@ class App extends React.Component {
         }
       })
       .then(response => {
-        console.log(response.data[0]);
+        // console.log(response.data[0]);
         this.setState({
           user_data: response.data[0]
         });
@@ -138,7 +142,7 @@ class App extends React.Component {
 
   fetchSingleHouse() {
     console.log("----fetch house: " + this.state.house_data.house_id + " ----");
-    var lucky = Math.floor(Math.random() * 3) + 1;
+    var lucky = Math.floor(Math.random() * 100) + 1;
     var url = "http://localhost:8080/data/houses/id";
     axios
       .get(url, {
@@ -157,6 +161,13 @@ class App extends React.Component {
   componentDidMount() {
     this.fetchSingleHouse();
     this.fetchUser();
+    setTimeout(() => {
+      this.setState({
+        user_data: {
+          level: this.state.user_data.level
+        }
+      });
+    }, 500);
   }
 
   render() {
@@ -171,6 +182,7 @@ class App extends React.Component {
           <PriceRange
             Price={this.state.house_data.Price}
             value={this.state.value}
+            score={this.state.user_data.level}
             ref={this.child_price}
           />
         </div>
