@@ -46,6 +46,9 @@ class PriceRange extends React.Component {
         this.props.Price
     );
   }
+  numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
   handleChange(event) {
     this.setState({ value: event.target.value });
   }
@@ -76,8 +79,10 @@ class PriceRange extends React.Component {
           className="myslider"
         />
         <div>
-          ${this.state.value} - $
-          {parseInt(this.state.value) + parseInt(this.state.slider_len)}
+          ${this.numberWithCommas(this.state.value)} - $
+          {this.numberWithCommas(
+            parseInt(this.state.value) + parseInt(this.state.slider_len)
+          )}
         </div>
       </div>
     );

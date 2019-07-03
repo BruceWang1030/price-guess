@@ -24,6 +24,9 @@ class Answer extends React.Component {
       return "Almost there!";
     }
   }
+  numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
   componentWillReceiveProps(props) {
     this.setState({
       Price: this.props.Price,
@@ -36,8 +39,8 @@ class Answer extends React.Component {
         <Flip left when={this.state.showAnswer}>
           <div className={"answer-block-" + this.props.isCorrect}>
             <p>
-              {this.sentence(this.props.isCorrect)} The actual price is{" "}
-              {this.props.Price}
+              {this.sentence(this.props.isCorrect)} The actual price is $
+              {this.numberWithCommas(this.props.Price)}
             </p>
           </div>
         </Flip>
