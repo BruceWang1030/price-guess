@@ -151,14 +151,12 @@ class App extends React.Component {
     setTimeout(() => {
       this.fetchUser();
     }, 250);
-
   }
 
   render() {
     return (
       <div className="App">
         <Score score={this.state.user_data.level} />
-        <Menu />
         <header className="App-header">
           <Card house_data={this.state.house_data} ref={this.child_card} />
         </header>
