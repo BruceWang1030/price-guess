@@ -6,7 +6,7 @@ class Answer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      Price: 100000,
+      Price: props.Price,
       isCorrect: false,
       showAnswer: false
     };

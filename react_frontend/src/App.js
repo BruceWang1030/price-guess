@@ -4,6 +4,7 @@ import Zoom from "react-reveal/Zoom";
 import "./App.css";
 
 import Score from "./components/Score/Score";
+import Menu from "./components/Menu/Menu";
 import Card from "./components/Card/Card";
 import PriceRange from "./components/PriceRange/PriceRange";
 import Answer from "./components/Answer/Answer";
@@ -45,7 +46,9 @@ class App extends React.Component {
   mainBtnClick = () => {
     var isCorrect = this.child_price.current.check();
     this.setResult(isCorrect);
-    this.child_answer.current.flip();
+    setTimeout(() => {
+      this.child_answer.current.flip();
+    }, 100);
     console.log("isCorrect: " + isCorrect);
     if (isCorrect) {
       console.log("correct");
@@ -62,7 +65,9 @@ class App extends React.Component {
   };
   skipBtnClick = () => {
     this.setResult(false);
-    this.child_answer.current.flip();
+    setTimeout(() => {
+      this.child_answer.current.flip();
+    }, 100);
     console.log("skipped");
     setTimeout(() => {
       this.child_answer.current.flip();
@@ -146,12 +151,14 @@ class App extends React.Component {
     setTimeout(() => {
       this.fetchUser();
     }, 250);
+
   }
 
   render() {
     return (
       <div className="App">
         <Score score={this.state.user_data.level} />
+        <Menu />
         <header className="App-header">
           <Card house_data={this.state.house_data} ref={this.child_card} />
         </header>

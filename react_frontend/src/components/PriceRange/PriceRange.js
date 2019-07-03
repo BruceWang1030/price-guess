@@ -17,7 +17,10 @@ class PriceRange extends React.Component {
   }
   reset() {
     this.setState({
-      value: 100000
+      value: 100000,
+      percent: this.slider_percent(this.props.score),
+      slider_len: (2000000 * this.slider_percent(this.props.score)) / 100,
+      max: 2000000 - (2000000 * this.slider_percent(this.props.score)) / 100
     });
   }
   slider_percent(score) {
@@ -46,7 +49,6 @@ class PriceRange extends React.Component {
   handleChange(event) {
     this.setState({ value: event.target.value });
   }
-
   componentWillReceiveProps(props) {
     this.setState({
       Price: this.props.Price,
