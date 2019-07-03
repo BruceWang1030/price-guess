@@ -34,9 +34,9 @@ class Answer extends React.Component {
     return (
       <div>
         <Flip left when={this.state.showAnswer}>
-          <div className={"answer-block-" + this.state.isCorrect}>
+          <div className={"answer-block-" + this.props.isCorrect}>
             <p>
-              {this.sentence(this.state.isCorrect)} The actual price is{" "}
+              {this.sentence(this.props.isCorrect)} The actual price is{" "}
               {this.props.Price}
             </p>
           </div>

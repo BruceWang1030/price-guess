@@ -113,7 +113,7 @@ class App extends React.Component {
         }
       })
       .then(response => {
-        console.log(response.data[0]);
+        // console.log(response.data[0]);
         this.setState({
           user_data: response.data[0]
         });
@@ -141,6 +141,11 @@ class App extends React.Component {
   componentDidMount() {
     this.fetchSingleHouse();
     this.fetchUser();
+    console.log("component did mount");
+
+    setTimeout(() => {
+      this.fetchUser();
+    }, 250);
   }
 
   render() {
