@@ -35,8 +35,8 @@ class PriceRange extends React.Component {
   }
   check() {
     return (
-      this.state.value <= this.props.Price &&
-      this.state.value + this.state.slider_len >= this.props.Price
+      this.state.value <= this.state.Price &&
+      this.state.value + this.state.slider_len >= this.state.Price
     );
   }
   handleChange(event) {

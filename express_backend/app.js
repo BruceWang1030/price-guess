@@ -34,36 +34,22 @@ app.get("/", function(req, res) {
 
 //fetch house single
 app.get("/data/houses/id", function(req, res) {
-  console.log("req.query: " + req.query.house_id);
-  console.log(req.query);
-  console.log(req.params);
   var sql = "SELECT * FROM houses where house_id=" + req.query.house_id;
   db.query(sql, (err, result) => {
     if (err) throw err;
-    console.log(result);
+    // console.log(result);
     res.send(result);
   });
 });
 
-//fetch user
-app.get("/data/users", function(req, res) {
-  console.log("req.query: " + req.query.user_id);
-  var sql = "SELECT * FROM users where user_id=" + req.query.user_id;
-  db.query(sql, (err, result) => {
-    if (err) throw err;
-    console.log(result);
-    res.send(result);
-  });
-});
-
-//post a new user
-app.post("auth/register", function(req, res) {
+//Register
+app.post("/auth/register", function(req, res) {
   console.log("post new user to users");
   console.log(req.body);
   var this_day = new Date();
   var created_at = this_day.toISOString();
-  var data = { 
-    level: req.body.level, 
+  var data = {
+    level: req.body.level,
     created_at: created_at,
     username: req.body.username,
     email: req.body.email,
@@ -72,16 +58,61 @@ app.post("auth/register", function(req, res) {
   var sql =
     "INSERT INTO users (level, created_at, username, email, password) VALUES (?,?,?,?,?)";
   console.log(sql);
-  db.query(sql, [data.level, data.created_at, data.username, data.email, data.password], (err, result) => {
+  db.query(
+    sql,
+    [data.level, data.created_at, data.username, data.email, data.password],
+    (err, result) => {
+      if (err) throw err;
+      console.log(result);
+      res.send({
+        status: "Data sent",
+        level: data.level,
+        created: data.created_at,
+        username: data.username,
+        email: data.email
+      });
+    }
+  );
+});
+
+//fetch user
+app.get("/data/users", function(req, res) {
+  var sql = "SELECT * FROM users where user_id=" + req.query.user_id;
+  db.query(sql, (err, result) => {
     if (err) throw err;
+    // console.log(result);
+    res.send(result);
+  });
+});
+
+//Login
+app.get("/auth/login", function(req, res) {
+  console.log("login to user");
+  console.log(req.query);
+  var data = {
+    username: req.query.username,
+    password: req.query.password
+  };
+  var sql = "SELECT * FROM users where username=? && password=?";
+  console.log(sql);
+  db.query(sql, [data.username, data.password], (err, result) => {
+    if (err) {
+      throw err;
+    }
+    console.log("login result");
     console.log(result);
-    res.send({
-      status: "Data sent",
-      level: data.level,
-      created: data.created_at,
-      username: data.username,
-      email: data.email
-    });
+    console.log("login result");
+    // res.send(result);
+    if (!result) {
+      res.send({
+        status: "fail"
+      });
+    } else {
+      console.log("login result");
+      console.log(result);
+      console.log("login result");
+      res.send(result);
+    }
   });
 });
 

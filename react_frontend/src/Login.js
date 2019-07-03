@@ -6,19 +6,27 @@ class Login extends React.Component {
     super(props);
     this.state = {
       username: "",
+      usernameLogin: "",
       email: "",
-      password: ""
+      password: "",
+      passwordLogin: "",
+      user_id: 0
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChangeRegister = this.handleChangeRegister.bind(this);
+    this.handleChangeLogin = this.handleChangeLogin.bind(this);
+    this.handleRegister = this.handleRegister.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
   }
   postNewUser() {
-    console.log("----Post user----");
-    var url = "http://localhost:8080/data/users";
+    console.log("----Register User " + this.state.username + "----");
+    var url = "http://localhost:8080/auth/register";
     var today = new Date();
     axios
       .post(url, {
-        level: 5,
+        username: this.state.username,
+        email: this.state.email,
+        password: this.state.password,
+        level: 1,
         created_at: today.toISOString()
       })
       .then(function(response) {
@@ -28,54 +36,106 @@ class Login extends React.Component {
         console.log(error);
       });
   }
-  handleSubmit(event) {
-    alert(
-      this.state.username + "," + this.state.email + "," + this.state.password
+
+  getLogin() {
+    console.log("----Login User " + this.state.usernameLogin + "----");
+    var url = "http://localhost:8080/auth/login";
+    console.log(
+      "login username&password: " +
+        this.state.usernameLogin +
+        ", " +
+        this.state.passwordLogin
     );
-    event.preventDefault();
+    axios
+      .get(url, {
+        params: {
+          username: this.state.usernameLogin,
+          password: this.state.passwordLogin
+        }
+      })
+      .then(response => {
+        console.log("reposnse");
+        console.log(response);
+        console.log("reposnse");
+        if (response.statusText !== "OK") {
+          alert("Username or passwordd wrong");
+        } else {
+          this.setState({
+            user_id: response.data[0].user_id
+          });
+          console.log("user_id:" + this.state.user_id);
+        }
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   }
-  handleChange(event) {
+  handleRegister(event) {
+    event.preventDefault();
+    this.postNewUser();
+  }
+  handleLogin(event) {
+    event.preventDefault();
+    this.getLogin();
+  }
+  handleChangeRegister(event) {
     this.setState({
-      username: event.target.username,
-      email: event.target.email,
-      password: event.target.password
+      [event.target.name]: event.target.value
     });
   }
+  handleChangeLogin(event) {
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  }
+
   render() {
     return (
       <div>
         <h1>Register Form</h1>
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleRegister}>
           <input
             type="text"
             placeholder="Username"
             value={this.state.username}
-            onChange={this.handleChange}
+            onChange={this.handleChangeRegister}
+            name="username"
             required
           />
           <input
             type="text"
             placeholder="Email"
             value={this.state.email}
-            onChange={this.handleChange}
+            onChange={this.handleChangeRegister}
+            name="email"
             required
           />
           <input
             type="password"
             placeholder="Password"
             value={this.state.password}
-            onChange={this.handleChange}
+            onChange={this.handleChangeRegister}
+            name="password"
             required
           />
           <input type="submit" value="Submit" />
         </form>
         <h1>Login Form</h1>
-        <form action="auth/login" method="POST">
-          <input type="text" name="username" placeholder="Username" required />
+        <form onSubmit={this.handleLogin}>
+          <input
+            type="text"
+            placeholder="Username"
+            value={this.state.usernameLogin}
+            onChange={this.handleChangeLogin}
+            name="usernameLogin"
+            required
+          />
           <input
             type="password"
-            name="password"
             placeholder="Password"
+            value={this.state.passwordLogin}
+            onChange={this.handleChangeLogin}
+            name="passwordLogin"
             required
           />
           <input type="submit" />

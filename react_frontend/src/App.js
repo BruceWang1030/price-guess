@@ -74,22 +74,6 @@ class App extends React.Component {
     }, 3000);
   };
 
-  postNewUser() {
-    console.log("----Post user----");
-    var url = "http://localhost:8080/data/users";
-    var today = new Date();
-    axios
-      .post(url, {
-        level: 5,
-        created_at: today.toISOString()
-      })
-      .then(function(response) {
-        console.log(response);
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-  }
   levelUpCalculator() {
     var currentLevel = this.state.user_data.level;
     var nextLevel = parseInt(currentLevel) + 1;
@@ -137,8 +121,8 @@ class App extends React.Component {
   }
 
   fetchSingleHouse() {
-    console.log("----fetch house: " + this.state.house_data.house_id + " ----");
     var lucky = Math.floor(Math.random() * 100) + 1;
+    console.log("----fetch house: " + lucky + " ----");
     var url = "http://localhost:8080/data/houses/id";
     axios
       .get(url, {
@@ -162,7 +146,6 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <Login />
         <Score score={this.state.user_data.level} />
         <header className="App-header">
           <Card house_data={this.state.house_data} ref={this.child_card} />
