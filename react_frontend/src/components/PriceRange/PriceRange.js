@@ -37,9 +37,13 @@ class PriceRange extends React.Component {
     }
   }
   check() {
+    // console.log(this.state.value);
+    // console.log(this.props.Price);
+    // console.log(parseInt(this.state.value) + parseInt(this.state.slider_len));
     return (
       this.state.value <= this.props.Price &&
-      this.state.value + this.state.slider_len >= this.props.Price
+      parseInt(this.state.value) + parseInt(this.state.slider_len) >=
+        this.props.Price
     );
   }
   handleChange(event) {

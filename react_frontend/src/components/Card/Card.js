@@ -53,7 +53,7 @@ class Card extends React.Component {
               Address: {this.props.house_data.Address},{" "}
               {this.props.house_data.City}, {this.props.house_data.Province}
             </li>
-            <li>{this.props.house_data.Amenities}</li>
+            <li>{this.props.house_data.Amenities || ""}</li>
           </ul>
         </div>
       </div>
