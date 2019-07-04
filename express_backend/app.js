@@ -85,6 +85,15 @@ app.get("/data/users", function(req, res) {
   });
 });
 
+app.get("/data/users/username", function(req, res) {
+  var sql = "SELECT * FROM users where username=" + req.query.username;
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    // console.log(result);
+    res.send(result);
+  });
+});
+
 //Login
 app.get("/auth/login", function(req, res) {
   console.log("login to user");
