@@ -26,7 +26,8 @@ class Login extends React.Component {
   }
   postNewUser() {
     console.log("----Register User " + this.state.username + "----");
-    var url = "http://localhost:8080/auth/register";
+    var url =
+      "http://ec2-18-224-199-146.us-east-2.compute.amazonaws.com:8080/auth/register";
     var today = new Date();
     axios
       .post(url, {
@@ -54,9 +55,9 @@ class Login extends React.Component {
   }
   getRegisteredLogin() {
     console.log("----fetch user: " + this.state.username + " ----");
-    var url = "http://localhost:8080/data/users/username";
-    // var url =
-    // "http://ec2-18-224-199-146.us-east-2.compute.amazonaws.com:8080/data/users";
+    //var url = "http://localhost:8080/data/users/username";
+    var url =
+      "http://ec2-18-224-199-146.us-east-2.compute.amazonaws.com:8080/data/users/username";
     axios
       .get(url, {
         params: {
@@ -74,7 +75,8 @@ class Login extends React.Component {
   }
   getLogin() {
     console.log("----Login User " + this.state.usernameLogin + "----");
-    var url = "http://localhost:8080/auth/login";
+    var url =
+      "http://ec2-18-224-199-146.us-east-2.compute.amazonaws.com:8080/auth/login";
     console.log(
       "login username&password: " +
         this.state.usernameLogin +

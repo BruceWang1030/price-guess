@@ -87,9 +87,9 @@ class Home extends React.Component {
   }
   levelUp() {
     console.log("----Level Up user----");
-    var url = "http://localhost:8080/data/users";
-    // var url =
-    // "http://ec2-18-224-199-146.us-east-2.compute.amazonaws.com:8080/data/users";
+    //var url = "http://localhost:8080/data/users";
+    var url =
+      "http://ec2-18-224-199-146.us-east-2.compute.amazonaws.com:8080/data/users";
     var this_user = this.state.user_data.user_id;
     var nextLevel = this.levelUpCalculator();
     axios
@@ -113,9 +113,9 @@ class Home extends React.Component {
 
   fetchUser() {
     console.log("----fetch user: " + this.state.user_data.user_id + " ----");
-    var url = "http://localhost:8080/data/users";
-    // var url =
-    // "http://ec2-18-224-199-146.us-east-2.compute.amazonaws.com:8080/data/users";
+    //var url = "http://localhost:8080/data/users";
+    var url =
+      "http://ec2-18-224-199-146.us-east-2.compute.amazonaws.com:8080/data/users";
     axios
       .get(url, {
         params: {
@@ -134,9 +134,9 @@ class Home extends React.Component {
   fetchSingleHouse() {
     var lucky = Math.floor(Math.random() * 100) + 1;
     console.log("----fetch house: " + lucky + " ----");
-    var url = "http://localhost:8080/data/houses/id";
-    // var url =
-    // "http://ec2-18-224-199-146.us-east-2.compute.amazonaws.com:8080/data/houses/id";
+    //var url = "http://localhost:8080/data/houses/id";
+    var url =
+      "http://ec2-18-224-199-146.us-east-2.compute.amazonaws.com:8080/data/houses/id";
     axios
       .get(url, {
         params: {
