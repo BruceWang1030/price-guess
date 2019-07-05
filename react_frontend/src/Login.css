@@ -73,7 +73,8 @@
 
 .switch-btn {
   text-align: center;
-  font-size: 20px;
+  font-size: 17px !important;
+  width: 86px;
 }
 
 .login-btn {
@@ -97,6 +98,6 @@
 }
 
 .login-red {
-  color: #e74c3c;
-  border: 2px #e74c3c solid;
+  color: #27c229;
+  border: 2px #27c229 solid;
 }

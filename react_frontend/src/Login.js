@@ -25,26 +25,44 @@ class Login extends React.Component {
     this.setState({ is_signin: !this.state.is_signin });
   }
   postNewUser() {
-    console.log("----Register User " + this.state.username + "----");
+    //test whether the username exists
+    console.log("----check user: " + this.state.username + " ----");
+    //var url = "http://localhost:8080/data/users/username";
     var url =
-      "http://ec2-18-224-199-146.us-east-2.compute.amazonaws.com:8080/auth/register";
-    var today = new Date();
+      "http://ec2-18-224-199-146.us-east-2.compute.amazonaws.com:8080/data/users/username";
     axios
-      .post(url, {
-        username: this.state.username,
-        email: this.state.email,
-        password: this.state.password,
-        level: 1,
-        created_at: today.toISOString()
-      })
-      .then(response => {
-        console.log(response);
-        if (response.status == 200) {
-          this.getRegisteredLogin();
+      .get(url, {
+        params: {
+          username: this.state.username
         }
       })
-      .catch(function(error) {
-        console.log(error);
+      .then(response => {
+        if (!response.data[0]) {
+          //register
+          console.log("----Register User " + this.state.username + "----");
+          var url =
+            "http://ec2-18-224-199-146.us-east-2.compute.amazonaws.com:8080/auth/register";
+          var today = new Date();
+          axios
+            .post(url, {
+              username: this.state.username,
+              email: this.state.email,
+              password: this.state.password,
+              level: 1,
+              created_at: today.toISOString()
+            })
+            .then(response => {
+              console.log(response);
+              if (response.status == 200) {
+                this.getRegisteredLogin();
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        } else {
+          alert("User already exists");
+        }
       });
   }
   toHome() {
