@@ -7,20 +7,8 @@ const cors = require("cors");
 app.use(bodyParser.json());
 app.use(cors());
 
-// const db = mysql.createConnection({
-//   host: "35.203.127.86",
-//   user: "brucewang",
-//   port: "3306",
-//   password: "Roger173",
-//   database: "huckleberry_game_data"
-// });
-
 const db = mysql.createConnection({
-  host: "mydb.co3yccf4vocd.us-east-2.rds.amazonaws.com",
-  user: "root",
-  port: "3306",
-  password: "05241030",
-  database: "mydb"
+  //information deleted
 });
 
 db.connect(function(err) {
