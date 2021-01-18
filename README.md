@@ -1,5 +1,6 @@
 # price-guess
-price guessing game for huckleberry
+Price guessing game
 
-Try it here:
-http://huckleberrygame.s3-website.us-east-2.amazonaws.com/
+Frontend: React
+Backend: Node.js
+DB: MySQL
